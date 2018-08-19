@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      input {
+        display: none;
+      }
+      label {
+        display: inline-block;
+        height: 30px;
+        width: 30px;
+        margin: 10px;
+        cursor: pointer;
+      }
+      input:checked + label {
+        outline: 2px dashed black;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h3>Choose a different background color:</h3>
+    </div>
+    <div id="backgroundButtonDiv"></div>
+    <div>
+      <h3>Choose a different selection color:</h3>
+    </div>
+    <div id="selectionButtonDiv"></div>
+  </body>
+  <script src="options.js"></script>
+</html>
