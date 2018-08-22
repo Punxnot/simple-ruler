@@ -3,23 +3,24 @@
   var oldCanvas = document.getElementById("simpleRulerCanvas");
   if (oldCanvas) {
     oldCanvas.parentNode.removeChild(oldCanvas);
+    // document.body.style.overflow = "initial";
     return;
   }
 
   chrome.storage.sync.get(['backgroundLayerColor', 'selectionColor'], function(data) {
     var backgroundLayerColor = data.backgroundLayerColor;
     var selectionColor = data.selectionColor;
-    console.log(data);
+    
     // Create semi-transparent layer
     var simpleRulerCanvas = document.createElement('div');
     simpleRulerCanvas.setAttribute("id", "simpleRulerCanvas");
     simpleRulerCanvas.style.position = 'fixed';
     simpleRulerCanvas.style.top = 0;
     simpleRulerCanvas.style.left = 0;
-    simpleRulerCanvas.style.height = "100vh";
-    simpleRulerCanvas.style.width = "100%";
+    simpleRulerCanvas.style.bottom = 0;
+    simpleRulerCanvas.style.right = 0;
     simpleRulerCanvas.style.backgroundColor = backgroundLayerColor;
-    simpleRulerCanvas.style.zIndex = "1000";
+    simpleRulerCanvas.style.zIndex = "9999";
     simpleRulerCanvas.style.cursor = "crosshair";
 
     // Create info container
@@ -30,18 +31,16 @@
 
     simpleRulerCanvas.appendChild(simpleRulerinfoBox);
     document.body.appendChild(simpleRulerCanvas);
+    // document.body.style.overflow = "hidden";
 
     initDraw(simpleRulerCanvas);
 
     function initDraw(simpleRulerCanvas) {
       function setMousePosition(e) {
         var ev = e || window.event;
-        if (ev.pageX) {
-          mouse.x = ev.pageX + window.pageXOffset;
-          mouse.y = ev.pageY + window.pageYOffset;
-        } else if (ev.clientX) {
-          mouse.x = ev.clientX + document.body.scrollLeft;
-          mouse.y = ev.clientY + document.body.scrollTop;
+        if (ev.clientX) {
+          mouse.x = ev.clientX;
+          mouse.y = ev.clientY;
         }
       };
 
