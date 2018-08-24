@@ -1,16 +1,18 @@
 (function() {
-  // Remove if already created
   var oldCanvas = document.getElementById("simpleRulerCanvas");
   if (oldCanvas) {
+    removeSelection(oldCanvas);
+    return false;
+  }
+
+  function removeSelection(oldCanvas) {
     oldCanvas.parentNode.removeChild(oldCanvas);
-    // document.body.style.overflow = "initial";
-    return;
   }
 
   chrome.storage.sync.get(['backgroundLayerColor', 'selectionColor'], function(data) {
     var backgroundLayerColor = data.backgroundLayerColor;
     var selectionColor = data.selectionColor;
-    
+
     // Create semi-transparent layer
     var simpleRulerCanvas = document.createElement('div');
     simpleRulerCanvas.setAttribute("id", "simpleRulerCanvas");
@@ -27,11 +29,11 @@
     var simpleRulerinfoBox = document.createElement('div');
     simpleRulerinfoBox.setAttribute("id", "simpleRulerinfoBox");
     simpleRulerinfoBox.style.position = 'absolute';
-    simpleRulerinfoBox.style.background = "#ffffff";
+    simpleRulerinfoBox.style.background = "#000000";
+    simpleRulerinfoBox.style.color = "#ffffff";
 
     simpleRulerCanvas.appendChild(simpleRulerinfoBox);
     document.body.appendChild(simpleRulerCanvas);
-    // document.body.style.overflow = "hidden";
 
     initDraw(simpleRulerCanvas);
 
@@ -61,7 +63,7 @@
           element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
           element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
         }
-      }
+      };
 
       simpleRulerCanvas.onclick = function(e) {
         if (element !== null) {
@@ -74,11 +76,11 @@
           var elementHeight = parseInt(element.style.height);
           var viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
           if (elementHeight >= (viewportHeight - 60)) {
-            simpleRulerinfoBox.style.top = elementTopPosition + 20 + "px";
+            simpleRulerinfoBox.style.top = elementTopPosition + 10 + "px";
           } else if (elementTopPosition >= 60) {
             simpleRulerinfoBox.style.top = elementTopPosition - 20 + "px";
           } else {
-            simpleRulerinfoBox.style.top = elementTopPosition + elementHeight + 20 + "px";
+            simpleRulerinfoBox.style.top = elementTopPosition + elementHeight + 10 + "px";
           }
 
           element = null;
@@ -104,7 +106,23 @@
 
           simpleRulerCanvas.appendChild(element);
         }
-      }
+      };
+
+      document.addEventListener("keydown", function(evt) {
+        evt = evt || window.event;
+        var isEscape = false;
+        if ("key" in evt) {
+          isEscape = (evt.key == "Escape" || evt.key == "Esc");
+        } else {
+          isEscape = (evt.keyCode == 27);
+        }
+        var oldCanvas = document.getElementById("simpleRulerCanvas");
+        if (isEscape && oldCanvas) {
+          evt.preventDefault();
+          removeSelection(oldCanvas);
+          return false;
+        }
+      });
     }
   });
 })();
